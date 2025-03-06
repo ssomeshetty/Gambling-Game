@@ -1,4 +1,4 @@
-# Lucky Ling
+# Lucky King
 
 **Lucky King** is a dynamic gambling game that simulates a journey through 7 levels, where players make decisions at each stage, affecting their progress and earnings. With different risk levels—safe, mid-safe, and not-safe—the game challenges players to maximize their profits while navigating through these stages. The game uses an algorithm that adjusts risk probabilities based on player behavior, ensuring an engaging experience while encouraging continued play. Players’ statuses change from "Poor" to "King" as they progress, with corresponding visual icons for each stage.
 
