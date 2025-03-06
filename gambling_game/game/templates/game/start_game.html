@@ -1,0 +1,65 @@
+{% extends 'game/base.html' %}
+
+{% block title %}Start Game - Gambling Game{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h3 class="card-title mb-0">Start a New Game</h3>
+            </div>
+            <div class="card-body">
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="alert alert-info">
+                            <h5>Game Rules</h5>
+                            <ul>
+                                <li>Navigate through 7 stages to reach King status</li>
+                                <li>Safe doors double your bet</li>
+                                <li>Mid-Safe doors halve your bet</li>
+                                <li>Not Safe doors make you lose your bet</li>
+                                <li>You can cash out at any stage to secure your winnings</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="alert alert-success">
+                            <h5>Your Stats</h5>
+                            <p>Current Balance: <strong>${{ profile.balance }}</strong></p>
+                            <p>Highest Status: <strong>{{ profile.highest_label }}</strong></p>
+                            <p>Games Won: <strong>{{ profile.games_won }}/{{ profile.games_played }}</strong></p>
+                        </div>
+                    </div>
+                </div>
+                
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.bet_amount.id_for_label }}" class="form-label">Place Your Bet</label>
+                        <div class="input-group">
+                            <span class="input-group-text">$</span>
+                            {{ form.bet_amount }}
+                        </div>
+                        {% if form.bet_amount.errors %}
+                        <div class="text-danger">
+                            {% for error in form.bet_amount.errors %}
+                            {{ error }}
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        <div class="form-text">
+                            The minimum bet is $1.00. Your maximum bet is limited by your current balance.
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg">Start Game</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

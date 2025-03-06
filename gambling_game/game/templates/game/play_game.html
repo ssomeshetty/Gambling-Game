@@ -1,0 +1,339 @@
+{% extends 'game/base.html' %}
+
+{% block title %}Playing Game - Gambling Game{% endblock %}
+
+{% block extra_css %}
+
+
+<style>
+    .game-map {
+        position: relative;
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+    
+    .game-stage {
+        position: relative;
+        text-align: center;
+    }
+    
+    .stage-node {
+        display: inline-block;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background-color: #dee2e6;
+        margin: 0 5px;
+        text-align: center;
+        line-height: 60px;
+        font-weight: bold;
+        font-size: 20px;
+    }
+    
+    .stage-node.current {
+        background-color: #ffc107;
+        border: 3px solid #fd7e14;
+    }
+    
+    .stage-node.completed {
+        background-color: #28a745;
+        color: white;
+    }
+    
+    .door-options {
+        display: flex;
+        justify-content: space-around;
+        margin-top: 30px;
+    }
+    
+    .door {
+        width: 120px;
+        height: 180px;
+        background-color: #6c757d;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 24px;
+        cursor: pointer;
+        transition: transform 0.3s;
+    }
+    
+    .door:hover {
+        transform: scale(1.05);
+        background-color: #5a6268;
+    }
+    
+    .status-label {
+        font-size: 18px;
+        font-weight: bold;
+        color: #495057;
+    }
+    
+    .label-poor {
+        color: #6c757d;
+    }
+    
+    .label-middle {
+        color: #17a2b8;
+    }
+    
+    .label-ultra {
+        color: #fd7e14;
+    }
+    
+    .label-king {
+        color: #dc3545;
+    }
+    
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+    }
+    
+    .pulse {
+        animation: pulse 1s infinite;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h3 class="card-title mb-0">Game #{{ session.id }}</h3>
+                    <div>
+                        <span class="badge bg-light text-dark me-2">Stage {{ session.current_stage }}/7</span>
+                        <span class="badge 
+                            {% if session.current_label == 'Poor' %}bg-secondary
+                            {% elif session.current_label == 'Middle Class' %}bg-info
+                            {% elif session.current_label == 'Ultra Rich' %}bg-warning
+                            {% else %}bg-danger{% endif %}">
+                            {{ session.current_label }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Current Bet</h5>
+                                <h2 class="text-success" id="current-bet">${{ session.current_bet }}</h2>
+                                <p class="text-muted">Original Bet: ${{ session.original_bet }}</p>
+                                <button id="cash-out-btn" class="btn btn-warning">Cash Out Now</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Your Progress</h5>
+                                <div class="progress mb-3" style="height: 25px;">
+                                    <div class="progress-bar 
+                                        {% if session.current_label == 'Poor' %}bg-secondary
+                                        {% elif session.current_label == 'Middle Class' %}bg-info
+                                        {% elif session.current_label == 'Ultra Rich' %}bg-warning
+                                        {% else %}bg-danger{% endif %}" 
+                                        style="width: {{ width_percentage }}%"
+                                    </div>
+                                </div>
+                                <p class="status-label 
+                                    {% if session.current_label == 'Poor' %}label-poor
+                                    {% elif session.current_label == 'Middle Class' %}label-middle
+                                    {% elif session.current_label == 'Ultra Rich' %}label-ultra
+                                    {% else %}label-king{% endif %}">
+                                    Status: {{ session.current_label }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="game-map">
+                    <div class="game-stage">
+                        {% for i in "1234567" %}
+                        <div class="stage-node 
+                            {% if forloop.counter < session.current_stage %}completed
+                            {% elif forloop.counter == session.current_stage %}current
+                            {% endif %}">
+                            {{ forloop.counter }}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                
+                <div class="alert alert-info mb-4">
+                    <h5>Choose Your Path</h5>
+                    <p>Select one of the doors below to continue your journey. Remember:</p>
+                    <ul>
+                        <li><strong>Safe Door:</strong> Doubles your bet</li>
+                        <li><strong>Mid-Safe Door:</strong> Halves your bet</li>
+                        <li><strong>Not Safe Door:</strong> You lose your bet</li>
+                    </ul>
+                </div>
+                
+                <div class="door-options">
+                    {% for i in "0123"|make_list %}
+                    {% if forloop.counter <= door_count %}
+                    <div class="door" data-index="{{ forloop.counter0 }}">
+                        <span>{{ forloop.counter }}</span>
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+                
+                <div class="text-center mt-4">
+                    <a href="{% url 'profile' %}" class="btn btn-secondary">Back to Profile</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Result Modal -->
+<div class="modal fade" id="resultModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" id="result-header">
+                <h5 class="modal-title" id="result-title">Result</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p id="result-message"></p>
+                <h4>Current Bet: <span id="result-bet" class="text-success"></span></h4>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <a href="" id="continue-btn" class="btn btn-primary">Continue</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Cash Out Confirmation Modal -->
+<div class="modal fade" id="cashOutModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-warning">
+                <h5 class="modal-title">Cash Out Confirmation</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to cash out now?</p>
+                <h4>You will receive: <span class="text-success">${{ session.current_bet }}</span></h4>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" id="confirm-cash-out" class="btn btn-warning">Cash Out</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    $(document).ready(function() {
+        // Handle door selection
+        $('.door').click(function() {
+            const doorIndex = $(this).data('index');
+            
+            // Disable all doors while processing
+            $('.door').css('pointer-events', 'none');
+            $(this).addClass('pulse');
+            
+            // Send the move to the server
+            $.ajax({
+                url: "{% url 'make_move' session.id %}",
+                type: "POST",
+                data: {
+                    door_index: doorIndex,
+                    csrfmiddlewaretoken: "{{ csrf_token }}"
+                },
+                success: function(response) {
+                    // Update the current bet amount
+                    $('#current-bet').text('$' + response.current_bet.toFixed(2));
+                    $('#result-bet').text('$' + response.current_bet.toFixed(2));
+                    
+                    // Set the result message
+                    $('#result-message').text(response.message);
+                    
+                    // Set the appropriate header color
+                    if (response.message.includes("Game over")) {
+                        $('#result-header').removeClass().addClass('modal-header bg-danger text-white');
+                        $('#result-title').text('Game Over');
+                        $('#continue-btn').text('Back to Profile').attr('href', "{% url 'profile' %}");
+                    } else if (response.message.includes("Congratulations")) {
+                        $('#result-header').removeClass().addClass('modal-header bg-success text-white');
+                        $('#result-title').text('Congratulations!');
+                        $('#continue-btn').text('Back to Profile').attr('href', "{% url 'profile' %}");
+                    } else {
+                        $('#result-header').removeClass().addClass('modal-header bg-primary text-white');
+                        $('#result-title').text('Result');
+                        $('#continue-btn').text('Continue').attr('href', window.location.href);
+                    }
+                    
+                    // Show the result modal
+                    $('#resultModal').modal('show');
+                },
+                error: function() {
+                    alert('An error occurred. Please try again.');
+                    $('.door').css('pointer-events', 'auto');
+                    $('.door').removeClass('pulse');
+                }
+            });
+        });
+        
+        // Handle cash out button
+        $('#cash-out-btn').click(function() {
+            $('#cashOutModal').modal('show');
+        });
+        
+        // Handle cash out confirmation
+        $('#confirm-cash-out').click(function() {
+            // Disable the button while processing
+            $(this).prop('disabled', true).text('Processing...');
+            
+            // Send the cash out request to the server
+            $.ajax({
+                url: "{% url 'cash_out' session.id %}",
+                type: "POST",
+                data: {
+                    csrfmiddlewaretoken: "{{ csrf_token }}"
+                },
+                success: function(response) {
+                    // Close the cash out modal
+                    $('#cashOutModal').modal('hide');
+                    
+                    // Update the current bet amount
+                    $('#current-bet').text('$' + response.current_bet.toFixed(2));
+                    $('#result-bet').text('$' + response.current_bet.toFixed(2));
+                    
+                    // Set the result message
+                    $('#result-message').text(response.message);
+                    
+                    // Set the appropriate header color
+                    $('#result-header').removeClass().addClass('modal-header bg-success text-white');
+                    $('#result-title').text('Cash Out Successful');
+                    $('#continue-btn').text('Back to Profile').attr('href', "{% url 'profile' %}");
+                    
+                    // Show the result modal
+                    $('#resultModal').modal('show');
+                },
+                error: function() {
+                    alert('An error occurred. Please try again.');
+                    $('#confirm-cash-out').prop('disabled', false).text('Cash Out');
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

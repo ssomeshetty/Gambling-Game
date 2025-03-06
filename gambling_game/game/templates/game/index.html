@@ -1,0 +1,59 @@
+{% extends 'game/base.html' %}
+
+{% block title %}Gambling Game - Home{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body text-center">
+                <h1 class="card-title mb-4">Welcome to the Ultimate Gambling Game</h1>
+                <p class="lead">Test your luck and strategy on a journey from Poor to King!</p>
+                
+                <div class="mt-5">
+                    <img src="https://via.placeholder.com/800x400" alt="Game Map" class="img-fluid rounded mb-4">
+                </div>
+                
+                <div class="row mt-4">
+                    <div class="col-md-6 mb-3">
+                        <div class="card h-100 bg-light">
+                            <div class="card-body">
+                                <h3 class="card-title">How to Play</h3>
+                                <ul class="text-start">
+                                    <li>Start with a bet amount of your choice</li>
+                                    <li>Navigate through 7 stages to reach the King status</li>
+                                    <li>Choose your path wisely at each stage</li>
+                                    <li>Safe path: Doubles your bet</li>
+                                    <li>Mid-Safe path: Halves your bet</li>
+                                    <li>Not Safe path: Lose your bet</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="card h-100 bg-light">
+                            <div class="card-body">
+                                <h3 class="card-title">Status Levels</h3>
+                                <ul class="text-start">
+                                    <li><strong>Poor:</strong> Starting level (Stages 1-2)</li>
+                                    <li><strong>Middle Class:</strong> Medium progress (Stages 3-4)</li>
+                                    <li><strong>Ultra Rich:</strong> Advanced progress (Stages 5-6)</li>
+                                    <li><strong>King:</strong> Ultimate achievement (Stage 7)</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    {% if user.is_authenticated %}
+                    <a href="{% url 'start_game' %}" class="btn btn-primary btn-lg">Start Playing</a>
+                    {% else %}
+                    <a href="{% url 'login' %}" class="btn btn-primary btn-lg">Login to Play</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
