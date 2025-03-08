@@ -1,56 +1,168 @@
 {% extends 'game/base.html' %}
 
+{% load static %}
+
 {% block title %}Gambling Game - Home{% endblock %}
 
+{% block extra_css %}
+<style>
+    .feature-card {
+        transition: transform 0.2s;
+        height: 100%;
+    }
+    
+    .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+    
+    .game-banner {
+        max-width: 100%;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    
+    /* Enhanced color contrast for better visibility */
+    .status-poor {
+        color: #495057;
+        font-weight: bold;
+    }
+    
+    .status-middle {
+        color:rgb(172, 228, 242);
+        font-weight: bold;
+    }
+    
+    .status-ultra {
+        color: #d15c05;
+        font-weight: bold;
+    }
+    
+    .status-king {
+        color: #bc2130;
+        font-weight: bold;
+    }
+    
+    .welcome-text {
+        font-size: 2.5rem;
+        color:rgb(220, 228, 235);
+        font-weight: bold;
+    }
+    
+    /* Improved text visibility */
+    .card-body {
+        color:rgb(73, 82, 92);
+    }
+    
+    .lead {
+        color:rgb(198, 219, 239);
+        font-size: 1.3rem;
+        font-weight: 400;
+    }
+    
+    ul.text-start li {
+        margin-bottom: 8px;
+        font-size: 1rem;
+        color: #212529;
+    }
+    
+    @media (max-width: 768px) {
+        .welcome-text {
+            font-size: 2rem;
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .welcome-text {
+            font-size: 1.75rem;
+        }
+    }
+    
+    .cta-button {
+        padding: 12px 30px;
+        font-size: 1.2rem;
+        transition: all 0.3s;
+        font-weight: 600;
+    }
+    
+    .cta-button:hover {
+        transform: scale(1.05);
+    }
+    
+    @media (max-width: 576px) {
+        .cta-button {
+            width: 100%;
+            padding: 10px 20px;
+        }
+    }
+    
+    /* Card headings enhanced for visibility */
+    .feature-card .card-title {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #212529;
+        margin-bottom: 15px;
+    }
+    
+    /* Improved background with better contrast */
+    .feature-card.bg-light {
+        background-color: #f8f9fa !important;
+        border: 1px solid #dee2e6;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-8">
-        <div class="card">
-            <div class="card-body text-center">
-                <h1 class="card-title mb-4">Welcome to the Ultimate Gambling Game</h1>
-                <p class="lead">Test your luck and strategy on a journey from Poor to King!</p>
-                
-                <div class="mt-5">
-                    <img src="https://via.placeholder.com/800x400" alt="Game Map" class="img-fluid rounded mb-4">
-                </div>
-                
-                <div class="row mt-4">
-                    <div class="col-md-6 mb-3">
-                        <div class="card h-100 bg-light">
-                            <div class="card-body">
-                                <h3 class="card-title">How to Play</h3>
-                                <ul class="text-start">
-                                    <li>Start with a bet amount of your choice</li>
-                                    <li>Navigate through 7 stages to reach the King status</li>
-                                    <li>Choose your path wisely at each stage</li>
-                                    <li>Safe path: Doubles your bet</li>
-                                    <li>Mid-Safe path: Halves your bet</li>
-                                    <li>Not Safe path: Lose your bet</li>
-                                </ul>
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-xl-8 col-lg-10 col-md-12">
+            <div class="card shadow">
+                <div class="card-body text-center p-4">
+                    <h1 class="card-title mb-4 welcome-text">Welcome to the Ultimate Gambling Game</h1>
+                    <p class="lead">Test your luck and strategy on a journey from Poor to King!</p>
+                    
+                    <div class="mt-4 mt-md-5">
+                        <img src="{% static 'images/game.png' %}" alt="Game " class="img-fluid rounded game-banner mb-4">
+                    </div>
+                    
+                    <div class="row mt-4 g-3">
+                        <div class="col-md-6">
+                            <div class="card feature-card bg-light shadow-sm">
+                                <div class="card-body">
+                                    <h3 class="card-title">How to Play</h3>
+                                    <ul class="text-start">
+                                        <li>Start with a bet amount of your choice</li>
+                                        <li>Navigate through 7 stages to reach the King status</li>
+                                        <li>Choose your path wisely at each stage</li>
+                                        <li>Safe path: Doubles your bet</li>
+                                        <li>Mid-Safe path: Halves your bet</li>
+                                        <li>Not Safe path: Lose your bet</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card feature-card bg-light shadow-sm">
+                                <div class="card-body">
+                                    <h3 class="card-title">Status Levels</h3>
+                                    <ul class="text-start">
+                                        <li><span class="status-poor">Poor:</span> Starting level (Stages 1-2)</li>
+                                        <li><span class="status-middle">Middle Class:</span> Medium progress (Stages 3-4)</li>
+                                        <li><span class="status-ultra">Ultra Rich:</span> Advanced progress (Stages 5-6)</li>
+                                        <li><span class="status-king">King:</span> Ultimate achievement (Stage 7)</li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-6 mb-3">
-                        <div class="card h-100 bg-light">
-                            <div class="card-body">
-                                <h3 class="card-title">Status Levels</h3>
-                                <ul class="text-start">
-                                    <li><strong>Poor:</strong> Starting level (Stages 1-2)</li>
-                                    <li><strong>Middle Class:</strong> Medium progress (Stages 3-4)</li>
-                                    <li><strong>Ultra Rich:</strong> Advanced progress (Stages 5-6)</li>
-                                    <li><strong>King:</strong> Ultimate achievement (Stage 7)</li>
-                                </ul>
-                            </div>
-                        </div>
+                    
+                    <div class="mt-4 mt-md-5">
+                        {% if user.is_authenticated %}
+                        <a href="{% url 'start_game' %}" class="btn btn-primary btn-lg cta-button shadow-sm">Start Playing</a>
+                        {% else %}
+                        <a href="{% url 'login' %}" class="btn btn-primary btn-lg cta-button shadow-sm">Login to Play</a>
+                        {% endif %}
                     </div>
-                </div>
-                
-                <div class="mt-4">
-                    {% if user.is_authenticated %}
-                    <a href="{% url 'start_game' %}" class="btn btn-primary btn-lg">Start Playing</a>
-                    {% else %}
-                    <a href="{% url 'login' %}" class="btn btn-primary btn-lg">Login to Play</a>
-                    {% endif %}
                 </div>
             </div>
         </div>

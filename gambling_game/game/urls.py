@@ -1,5 +1,7 @@
 from django.urls import path
 from . import views
+from django.contrib.auth.views import LogoutView  # Import the LogoutView
+
 
 urlpatterns = [
     path('', views.index, name='index'),
@@ -12,7 +14,10 @@ urlpatterns = [
     path('leaderboard/', views.leaderboard, name='leaderboard'),
     path('about/', views.about, name='about'),
     path('signup/', views.signup, name='signup'),
+    path('logout/', views.user_logout, name='logout'),  # Logout URL
+
     
-    # Add this line to handle accounts/profile/
+    # Add the path for logout
+
     path('accounts/profile/', views.profile, name='accounts_profile'),  # Redirect to 'profile'
 ]

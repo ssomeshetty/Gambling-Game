@@ -1,0 +1,219 @@
+{% extends 'game/base.html' %}
+
+{% load static %}
+{% block title %}About - Lucky King{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <!-- About Card -->
+        <div class="card animate__animated animate__fadeIn">
+            <div class="card-header">
+                <h2 class="text-center mb-0"><i class="fas fa-info-circle me-2"></i>About Lucky King</h2>
+            </div>
+            <div class="card-body">
+                <!-- Profile Section -->
+                <div class="row mb-5">
+                    <div class="col-md-4 text-center">
+                        <div class="position-relative mb-4">
+                            <img src="{% static 'images/profile_pic.png' %}"  alt="Profile Image"  class="img-fluid rounded-circle border border-3 border-secondary" style="width: 200px; height: 200px; object-fit: cover; box-shadow: 0 5px 15px rgba(0,0,0,0.3);">
+                            <div class="position-absolute top-0 end-0 translate-middle-y">
+                                <span class="badge bg-warning p-2 rounded-circle">
+                                    <i class="fas fa-crown fa-2x"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <h4 class="text-light">Sangamesh Someshetty</h4>
+                        <p class="text-light opacity-75">Founder & Lead Developer</p>
+                        <div class="social-icons my-3">
+                            <a href="https://github.com/ssomeshetty"><i class="fab fa-github"></i></a>
+                            <a href="https://www.linkedin.com/in/sangameshsomeshetty/"><i class="fab fa-linkedin"></i></a>
+                            
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="p-3" style="background-color: rgba(255,255,255,0.05); border-radius: 15px;">
+                            <h3 class="text-warning mb-3">The Mastermind Behind Lucky King</h3>
+                            <p>Hello! I'm Sangamesh, the creator of Lucky King. A passion for creating engaging online experiences, I built Lucky King to combine the thrill of gambling with a user-friendly interface.</p>
+                            <p>My journey began in 2023 currently I am student . Since then, I've worked with various Projects that help Society .</p>
+                            <p>When I'm not coding or improving Lucky King, you can find me exploring new technologies, playing Mine and Aviator game online , reading some philosophy or psychology books, or social media scroling.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Our Story Section -->
+                <div class="mb-5">
+                    <div class="card-header" style="background: linear-gradient(135deg, var(--primary-color), #9b59b6); margin: -20px -20px 20px -20px; border-radius: 8px 8px 0 0;">
+                        <h3 class="mb-0"><i class="fas fa-book me-2"></i>Our Story</h3>
+                    </div>
+                    <p>Lucky King was born from a vision to create a digital gambling experience that combines the excitement of traditional casino games with modern technology and design .</p>
+                    <p>I am not planing it to launch in to market . Its just for academics or project purpose only . </p>
+                    
+                    <div class="row mt-4 mb-4">
+                        <div class="col-md-4 text-center mb-3">
+                            <div class="p-3" style="background-color: rgba(255,255,255,0.05); border-radius: 15px; height: 100%;">
+                                <i class="fas fa-users fa-3x text-warning mb-3"></i>
+                                <h4>2</h4>
+                                <p class="mb-0">Active Players</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-center mb-3">
+                            <div class="p-3" style="background-color: rgba(255,255,255,0.05); border-radius: 15px; height: 100%;">
+                                <i class="fas fa-gamepad fa-3x text-warning mb-3"></i>
+                                <h4>30+</h4>
+                                <p class="mb-0">Games Played</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-center mb-3">
+                            <div class="p-3" style="background-color: rgba(255,255,255,0.05); border-radius: 15px; height: 100%;">
+                                <i class="fas fa-trophy fa-3x text-warning mb-3"></i>
+                                <h4>200$</h4>
+                                <p class="mb-0">Prize Money Awarded</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Our Values Section -->
+                <div class="mb-5">
+                    <div class="card-header" style="background: linear-gradient(135deg, var(--primary-color), #9b59b6); margin: -20px -20px 20px -20px; border-radius: 8px 8px 0 0;">
+                        <h3 class="mb-0"><i class="fas fa-star me-2"></i>Our Values</h3>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <div class="p-3" style="background-color: rgba(255,255,255,0.05); border-radius: 15px; height: 100%;">
+                                <h4 class="d-flex align-items-center">
+                                    <i class="fas fa-shield-alt text-warning me-2"></i>
+                                    Security & Fair Play
+                                </h4>
+                                <p>We implement state-of-the-art encryption and use certified random number generators to ensure all games are fair and your information is protected.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <div class="p-3" style="background-color: rgba(255,255,255,0.05); border-radius: 15px; height: 100%;">
+                                <h4 class="d-flex align-items-center">
+                                    <i class="fas fa-hand-holding-heart text-warning me-2"></i>
+                                    Responsible Gaming
+                                </h4>
+                                <p>We promote healthy gambling habits and provide tools to help players set limits on their spending and playing time.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <div class="p-3" style="background-color: rgba(255,255,255,0.05); border-radius: 15px; height: 100%;">
+                                <h4 class="d-flex align-items-center">
+                                    <i class="fas fa-headset text-warning me-2"></i>
+                                    Customer Support
+                                </h4>
+                                <p>We are not providing any Customer support .</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <div class="p-3" style="background-color: rgba(255,255,255,0.05); border-radius: 15px; height: 100%;">
+                                <h4 class="d-flex align-items-center">
+                                    <i class="fas fa-rocket text-warning me-2"></i>
+                                    Innovation
+                                </h4>
+                                <p>We continuously improve our games and platform, introducing new features and gameplay elements to keep the experience fresh and exciting.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Section -->
+                <div>
+                    <div class="card-header" style="background: linear-gradient(135deg, var(--primary-color), #9b59b6); margin: -20px -20px 20px -20px; border-radius: 8px 8px 0 0;">
+                        <h3 class="mb-0"><i class="fas fa-envelope me-2"></i>Get In Touch</h3>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <div class="p-3" style="background-color: rgba(255,255,255,0.05); border-radius: 15px; height: 100%;">
+                                <h4 class="text-warning mb-3">Contact Information</h4>
+                                <div class="d-flex align-items-center mb-3">
+                                    <i class="fas fa-envelope text-warning me-3"></i>
+                                    <p class="mb-0">bremblue189@gmail.com</p>
+                                </div>
+                                <div class="d-flex align-items-center mb-3">
+                                    <i class="fas fa-phone text-warning me-3"></i>
+                                    <p class="mb-0">985475748(sorry)</p>
+                                </div>
+                                <div class="d-flex align-items-center mb-3">
+                                    <i class="fas fa-map-marker-alt text-warning me-3"></i>
+                                    <p class="mb-0">Bengaluru</p>
+                                </div>
+                                <div class="mt-4">
+                                    <h5>Follow Us:</h5>
+                                    <div class="social-icons">
+                                        <a href="#" class="me-3"><i class="fab fa-facebook fa-lg"></i></a>
+                                        <a href="#" class="me-3"><i class="fab fa-twitter fa-lg"></i></a>
+                                        <a href="#" class="me-3"><i class="fab fa-instagram fa-lg"></i></a>
+                                        <a href="#" class="me-3"><i class="fab fa-discord fa-lg"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <div class="p-3" style="background-color: rgba(255,255,255,0.05); border-radius: 15px; height: 100%;">
+                                <h4 class="text-warning mb-3">Send Us a Message</h4>
+                                <form>
+                                    <div class="mb-3">
+                                        <input type="text" class="form-control" placeholder="Your Name" style="background-color: rgba(255,255,255,0.1); border: none; color: white;">
+                                    </div>
+                                    <div class="mb-3">
+                                        <input type="email" class="form-control" placeholder="Your Email" style="background-color: rgba(255,255,255,0.1); border: none; color: white;">
+                                    </div>
+                                    <div class="mb-3">
+                                        <select class="form-select" style="background-color: rgba(255,255,255,0.1); border: none; color: white;">
+                                            <option selected>Select a topic</option>
+                                            <option>Support</option>
+                                            <option>Feedback</option>
+                                            <option>Partnership</option>
+                                            <option>Other</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <textarea class="form-control" rows="4" placeholder="Your Message" style="background-color: rgba(255,255,255,0.1); border: none; color: white;"></textarea>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-paper-plane me-2"></i>Send Message
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add hover animations to the team and values sections
+        const teamCards = document.querySelectorAll('.team-card');
+        teamCards.forEach(card => {
+            card.addEventListener('mouseover', function() {
+                this.classList.add('animate__animated', 'animate__pulse');
+            });
+            card.addEventListener('animationend', function() {
+                this.classList.remove('animate__animated', 'animate__pulse');
+            });
+        });
+        
+        // Fade in elements as they scroll into view
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate__animated', 'animate__fadeIn');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, {threshold: 0.1});
+        
+        document.querySelectorAll('.mb-5').forEach(section => {
+            observer.observe(section);
+        });
+    });
+</script>
+{% endblock %}

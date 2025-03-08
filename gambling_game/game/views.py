@@ -12,6 +12,16 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 
+from django.http import HttpResponseRedirect
+from django.contrib.auth import login, authenticate,logout
+
+
+def user_logout(request):
+    # Logout the user
+    logout(request)
+    # Redirect to the login page or home page
+    return redirect('/')  # You can change this to redirect to any page you prefer
+
 def signup(request):
     """Sign up a new user"""
     if request.method == 'POST':
@@ -166,6 +176,15 @@ def game_history(request):
     # Get completed game sessions
     completed_sessions = GameSession.objects.filter(player=profile, is_active=False).prefetch_related('moves')
     
+    # Add 'return_amount' and calculate absolute values
+    for session in completed_sessions:
+        session.return_amount = session.current_bet - session.original_bet
+        session.abs_return_amount = abs(session.return_amount)  # Calculate absolute return
+         # Calculate change for each move
+        for move in session.moves.all():
+            move.change = move.bet_after - move.bet_before  # Add change to move instance
+    
+        
     context = {
         'profile': profile,
         'completed_sessions': completed_sessions,
@@ -179,9 +198,15 @@ def leaderboard(request):
     # Get top players by balance
     top_by_balance = PlayerProfile.objects.order_by('-balance')[:10]
     
+    # Get the user's rank in balance leaderboard
+    user_balance_rank = next((i + 1 for i, profile in enumerate(top_by_balance) if profile.user == request.user), None)
+
     # Get top players by win rate
     top_by_win_rate = PlayerProfile.objects.filter(games_played__gt=0).order_by('-games_won', '-games_played')[:10]
     
+    # Get the user's rank in win rate leaderboard
+    user_win_rate_rank = next((i + 1 for i, profile in enumerate(top_by_win_rate) if profile.user == request.user), None)
+
     # Get top players by highest label
     label_order = {'King': 1, 'Ultra Rich': 2, 'Middle Class': 3, 'Poor': 4}
     top_by_label = sorted(
@@ -189,10 +214,16 @@ def leaderboard(request):
         key=lambda x: label_order.get(x.highest_label, 5)
     )[:10]
     
+    # Get the user's rank in label leaderboard
+    user_label_rank = next((i + 1 for i, profile in enumerate(top_by_label) if profile.user == request.user), None)
+
     context = {
         'top_by_balance': top_by_balance,
+        'user_balance_rank': user_balance_rank,
         'top_by_win_rate': top_by_win_rate,
+        'user_win_rate_rank': user_win_rate_rank,
         'top_by_label': top_by_label,
+        'user_label_rank': user_label_rank,
     }
     
     return render(request, 'game/leaderboard.html', context)
