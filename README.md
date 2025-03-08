@@ -11,6 +11,9 @@ Technologies Used :
 
 4 .Bootstrap - Frontend framework for responsive design and user interface.
 
+
+
+
 Features :
 1 .Dynamic Gameplay: Navigate through 7 stages with different risk levels at each decision point. Your decisions directly affect your bet amount, earnings, and progress.
 
