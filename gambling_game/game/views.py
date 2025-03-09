@@ -192,7 +192,6 @@ def game_history(request):
     
     return render(request, 'game/game_history.html', context)
 
-@login_required
 def leaderboard(request):
     """View leaderboard"""
     # Get top players by balance
