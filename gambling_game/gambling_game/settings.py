@@ -23,12 +23,11 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-%20&nn4+du$i^pq_yczg$m3g6o%*x+fukwms8lm7sy)12!3h7n'
-
+import os
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-%20&nn4+du$i^pq_yczg$m3g6o%*x+fukwms8lm7sy)12!3h7n')
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = []
+DEBUG = os.environ.get('DJANGO_DEBUG', '') != 'False'
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -121,7 +120,7 @@ USE_TZ = True
 
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [BASE_DIR / 'static',]
+STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 
@@ -132,4 +131,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_REDIRECT_URL = '/profile/'  # or any valid URL you want to redirect users after login
 
-ALLOWED_HOSTS = ['LuckyKing.onrender.com']
+ALLOWED_HOSTS = ['*']
+
