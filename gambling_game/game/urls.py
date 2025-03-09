@@ -15,9 +15,10 @@ urlpatterns = [
     path('about/', views.about, name='about'),
     path('signup/', views.signup, name='signup'),
     path('logout/', views.user_logout, name='logout'),  # Logout URL
-
+    
     
     # Add the path for logout
+    path('deposit/', views.deposit, name='deposit'),
 
     path('accounts/profile/', views.profile, name='accounts_profile'),  # Redirect to 'profile'
 ]

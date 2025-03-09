@@ -34,7 +34,7 @@ def signup(request):
             messages.error(request, 'There was an error with your signup.')
     else:
         form = UserCreationForm()
-
+    
     return render(request, 'game/signup.html', {'form': form})
 
 
@@ -231,3 +231,42 @@ def leaderboard(request):
 def about(request):
     """About page view"""
     return render(request, 'game/about.html')
+
+# Add this to your views.py file
+
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from decimal import Decimal
+
+@login_required
+def deposit(request):
+    """Handle deposit requests"""
+    profile, created = PlayerProfile.objects.get_or_create(user=request.user)
+    
+    if request.method == 'GET' and 'amount' in request.GET:
+        amount = request.GET.get('amount')
+        try:
+            deposit_amount = Decimal(amount)
+            
+            # Validate the deposit amount
+            if deposit_amount <= 0:
+                messages.error(request, "Deposit amount must be greater than 0.")
+                return redirect('profile')
+                
+            if deposit_amount > Decimal('10000'):
+                messages.warning(request, "Maximum deposit limit is $10,000 per transaction.")
+                deposit_amount = Decimal('10000')
+            
+            # Update player balance
+            profile.balance += deposit_amount
+            profile.save()
+            
+            messages.success(request, f"Successfully deposited ${deposit_amount}.")
+            return redirect('profile')
+        except:
+            messages.error(request, "Invalid deposit amount.")
+            return redirect('profile')
+    
+    # If no amount is specified, render the deposit form
+    return render(request, 'game/deposit.html', {'profile': profile})

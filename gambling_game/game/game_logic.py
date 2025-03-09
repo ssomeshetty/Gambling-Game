@@ -40,8 +40,8 @@ class GameEngine:
             # Use default configuration if not found
             stage_config = GameStage(
                 stage_number=session.current_stage,
-                safe_doors=1,
-                mid_safe_doors=2,
+                safe_doors=2,
+                mid_safe_doors=1,
                 not_safe_doors=1,
                 label_on_complete="Poor"
             )

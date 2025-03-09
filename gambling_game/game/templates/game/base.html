@@ -301,11 +301,43 @@
                         {% if user.playerprofile %}
                         <span class="balance-badge me-3">
                             <i class="fas fa-coins me-1"></i>${{ user.playerprofile.balance }}
-                        </span>
-                        {% endif %}
+                        </span>                            
+                        <!-- Add this right after the balance badge in the navbar -->
+                        <div class="dropdown me-2">
+                            <button class="btn btn-sm btn-success dropdown-toggle" type="button" id="quickDepositDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-plus-circle me-1"></i>Deposit
+                            </button>
+                            <div class="dropdown-menu p-3" style="min-width: 250px;">
+                                <h6 class="dropdown-header">Quick Deposit</h6>
+                                <div class="mb-2">
+                                    <div class="btn-group w-100" role="group">
+                                        <button type="button" class="btn btn-outline-success quick-deposit-btn" data-amount="10">$10</button>
+                                        <button type="button" class="btn btn-outline-success quick-deposit-btn" data-amount="25">$25</button>
+                                        <button type="button" class="btn btn-outline-success quick-deposit-btn" data-amount="50">$50</button>
+                                    </div>
+                                </div>
+                                <div class="mb-2">
+                                    <div class="btn-group w-100" role="group">
+                                        <button type="button" class="btn btn-outline-success quick-deposit-btn" data-amount="100">$100</button>
+                                        <button type="button" class="btn btn-outline-success quick-deposit-btn" data-amount="250">$250</button>
+                                        <button type="button" class="btn btn-outline-success quick-deposit-btn" data-amount="500">$500</button>
+                                    </div>
+                                </div>
+                                <div class="mb-2">
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        <input type="number" id="customDepositAmount" class="form-control" placeholder="Custom amount" min="5" step="5">
+                                        <button class="btn btn-success" type="button" id="customDepositBtn">Add</button>
+                                    </div>
+                                </div>
+                                <div id="depositMessage" class="small text-center mt-2"></div>
+                            </div>
+                        </div>                        
                         <a class="nav-link btn btn-outline-danger btn-sm" href="{% url 'logout' %}">
                             <i class="fas fa-sign-out-alt me-1"></i>Logout
                         </a>
+                        {% endif %}
+
 
                     </div>
                     {% else %}
@@ -410,7 +442,28 @@
                 }, 5000);
             });
         });
+        
+        // Replace or update your quick deposit JavaScript in the base template
+
+        // Add event listeners to quick deposit buttons
+        const depositButtons = document.querySelectorAll('.quick-deposit-btn');
+
+        depositButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const amount = this.getAttribute('data-amount');
+                window.location.href = `{% url 'deposit' %}?amount=${amount}`;
+            });
+        });
+
+        // Handle custom deposit button click
+        document.getElementById('customDepositBtn').addEventListener('click', function() {
+            const customAmount = document.getElementById('customDepositAmount').value;
+            if(customAmount) {
+                window.location.href = `{% url 'deposit' %}?amount=${customAmount}`;
+            }
+        });
     </script>
     {% block extra_js %}{% endblock %}
+    
 </body>
 </html>
