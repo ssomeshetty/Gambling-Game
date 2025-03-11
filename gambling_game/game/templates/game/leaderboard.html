@@ -196,7 +196,7 @@
                     {% if king %}
                     <h4 class="text-warning">{{ king.user.username }}</h4>
                     <p class="mb-1">Current reigning King</p>
-                    <p class="text-muted mb-0">Balance: ${{ king.balance|floatformat:2 }}</p>
+                    <p class="mb-0">Balance: ${{ king.balance|floatformat:2 }}</p>
                     {% else %}
                     <p class="mb-0">No player has reached King status yet!</p>
                     {% endif %}
@@ -215,7 +215,7 @@
                     {% if richest %}
                     <h4>${{ richest.balance|floatformat:2 }}</h4>
                     <p class="mb-1">{{ richest.user.username }}</p>
-                    <p class="text-muted mb-0">Status: {{ richest.highest_label }}</p>
+                    <p class="mb-0">Status: {{ richest.highest_label }}</p>
                     {% else %}
                     <p class="mb-0">No players found</p>
                     {% endif %}
@@ -234,7 +234,7 @@
                     {% if best and best.games_played > 0 %}
                     <h4>{{ best.games_won|floatformat:0 }}%</h4>
                     <p class="mb-1">{{ best.user.username }}</p>
-                    <p class="text-muted mb-0">{{ best.games_won }} / {{ best.games_played }} games</p>
+                    <p class="mb-0">{{ best.games_won }} / {{ best.games_played }} games</p>
                     {% else %}
                     <p class="mb-0">No players with games played</p>
                     {% endif %}

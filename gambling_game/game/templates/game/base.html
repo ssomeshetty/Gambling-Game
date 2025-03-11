@@ -10,6 +10,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <!-- Animate.css -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <!-- AOS (Animate On Scroll) -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
     <!-- Custom CSS -->
     {% load static %}
     <link rel="stylesheet" href="{% static 'game/css/style.css' %}">
@@ -21,6 +23,10 @@
             --success-color: #27ae60;
             --danger-color: #e74c3c;
             --light-color: #ecf0f1;
+            --accent-color: #e74c3c; /* Red accent for highlights */
+            --gradient-start: #0f0c29;
+            --gradient-middle: #302b63;
+            --gradient-end: #24243e;
         }
         
         body {
@@ -30,21 +36,53 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Background particles effect */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 25% 30%, rgba(255, 255, 255, 0.05) 2px, transparent 2px),
+                radial-gradient(circle at 75% 60%, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.03) 3px, transparent 3px);
+            background-size: 100px 100px;
+            pointer-events: none;
+            z-index: -1;
         }
 
         .navbar {
-            background: linear-gradient(to right, #0f0c29, #302b63, #24243e) !important;
+            background: linear-gradient(to right, var(--gradient-start), var(--gradient-middle), var(--gradient-end)) !important;
             padding: 0.8rem 1rem;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+        
+        .navbar.scrolled {
+            padding: 0.5rem 1rem;
         }
         
         .navbar-brand {
             font-weight: 700;
-            font-size: 1.6rem;
+            font-size: 1.8rem;
             color: var(--secondary-color) !important;
             letter-spacing: 1px;
             position: relative;
             padding-left: 35px;
+            text-shadow: 0 0 10px rgba(243, 156, 18, 0.5);
+            transition: all 0.3s ease;
+        }
+        
+        .navbar-brand:hover {
+            transform: scale(1.05);
         }
         
         .navbar-brand::before {
@@ -55,6 +93,13 @@
             transform: translateY(-50%);
             font-size: 1.8rem;
             color: var(--secondary-color);
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(-50%) rotate(0deg); }
+            50% { transform: translateY(-60%) rotate(5deg); }
+            100% { transform: translateY(-50%) rotate(0deg); }
         }
         
         .navbar-nav .nav-link {
@@ -63,10 +108,14 @@
             padding: 0.5rem 1rem;
             position: relative;
             transition: all 0.3s ease;
+            margin: 0 0.2rem;
+            border-radius: 5px;
         }
         
         .navbar-nav .nav-link:hover {
             color: var(--secondary-color) !important;
+            background-color: rgba(255, 255, 255, 0.05);
+            transform: translateY(-2px);
         }
         
         .navbar-nav .nav-link::after {
@@ -85,9 +134,31 @@
             width: 80%;
         }
 
+        .navbar-nav .nav-link.active {
+            color: var(--secondary-color) !important;
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .navbar-nav .nav-link.active::after {
+            width: 80%;
+        }
+
         .navbar-nav .nav-link:focus {
             outline: 2px solid var(--secondary-color);
             outline-offset: 2px;
+        }
+
+        .navbar-toggler {
+            border: 2px solid var(--secondary-color);
+            padding: 0.25rem 0.5rem;
+        }
+
+        .navbar-toggler:focus {
+            box-shadow: 0 0 0 0.25rem rgba(243, 156, 18, 0.25);
+        }
+
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(243, 156, 18, 1)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
         }
 
         .balance-badge {
@@ -96,48 +167,104 @@
             font-weight: 700;
             padding: 0.5rem 1rem;
             border-radius: 20px;
-            box-shadow: 0 0 10px rgba(243, 156, 18, 0.4);
+            box-shadow: 0 0 20px rgba(243, 156, 18, 0.6);
             animation: pulse 2s infinite;
+            transition: all 0.3s ease;
+            cursor: pointer;
         }
         
+        .balance-badge:hover {
+            transform: scale(1.05) translateY(-2px);
+            box-shadow: 0 0 25px rgba(243, 156, 18, 0.8);
+        }
+        
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(243, 156, 18, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(243, 156, 18, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(243, 156, 18, 0);
+            }
+        }
+
         .card {
             border: none;
             border-radius: 15px;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
             overflow: hidden;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            background-color: #0f3460;
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            background-color: rgba(15, 52, 96, 0.8);
             margin-bottom: 25px;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
         
         .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
         }
         
         .card-header {
             background: linear-gradient(135deg, var(--primary-color), #9b59b6);
             padding: 1.2rem;
             border-bottom: none;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card-header::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(transparent, rgba(255, 255, 255, 0.1), transparent);
+            transform: rotate(30deg);
+            animation: shimmer 6s infinite linear;
+            pointer-events: none;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) rotate(30deg); }
+            100% { transform: translateX(100%) rotate(30deg); }
+        }
+
+        .card-body {
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover .card-body {
+            background-color: rgba(20, 67, 120, 0.8);
+        }
+        
+        .btn {
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            transition: all 0.4s ease;
+            border-radius: 8px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
         }
         
         .btn-primary {
             background: linear-gradient(to right, var(--primary-color), #9b59b6);
             border: none;
-            position: relative;
-            overflow: hidden;
-            z-index: 1;
             padding: 0.7rem 1.5rem;
-            border-radius: 8px;
-            transition: all 0.4s ease;
         }
         
-        .btn-primary:hover {
+        .btn-primary:hover, .btn-primary:focus {
             transform: scale(1.05);
             box-shadow: 0 5px 15px rgba(142, 68, 173, 0.4);
+            background: linear-gradient(to right, #9b59b6, var(--primary-color));
         }
         
-        .btn-primary::before {
+        .btn-primary::before, .btn-success::before, .btn-danger::before, .btn-outline-light::before, .btn-outline-danger::before {
             content: '';
             position: absolute;
             top: 0;
@@ -149,14 +276,50 @@
             transition: all 0.6s ease;
         }
         
-        .btn-primary:hover::before {
+        .btn:hover::before {
             left: 100%;
+        }
+
+        .btn-success {
+            background: linear-gradient(to right, #27ae60, #2ecc71);
+            border: none;
+        }
+
+        .btn-success:hover, .btn-success:focus {
+            background: linear-gradient(to right, #2ecc71, #27ae60);
+            box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4);
+        }
+
+        .btn-outline-light, .btn-outline-danger {
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            transition: all 0.4s ease;
+        }
+
+        .btn-outline-light:hover, .btn-outline-danger:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
         
         .alert {
             border-radius: 10px;
             border: none;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .alert::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 100%);
+            pointer-events: none;
         }
         
         .alert-success {
@@ -180,10 +343,12 @@
         }
         
         footer {
-            background: linear-gradient(to right, #0f0c29, #302b63, #24243e) !important;
+            background: linear-gradient(to right, var(--gradient-start), var(--gradient-middle), var(--gradient-end)) !important;
             margin-top: auto;
             position: relative;
             overflow: hidden;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+            padding: 2rem 0 1.5rem;
         }
         
         footer::before {
@@ -197,19 +362,47 @@
         }
         
         .social-icons {
-            margin-top: 10px;
+            margin-top: 15px;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
         }
         
         .social-icons a {
             color: var(--light-color);
-            margin: 0 10px;
-            font-size: 1.2rem;
-            transition: all 0.3s ease;
+            margin: 0 15px;
+            font-size: 1.4rem;
+            transition: all 0.4s ease;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.1);
         }
         
         .social-icons a:hover {
             color: var(--secondary-color);
-            transform: translateY(-3px);
+            transform: translateY(-5px);
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .social-icons a::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background-color: rgba(243, 156, 18, 0.3);
+            transform: scale(0);
+            transition: all 0.4s ease;
+        }
+
+        .social-icons a:hover::before {
+            transform: scale(1.2);
+            opacity: 0;
         }
 
         .welcome-badge {
@@ -217,30 +410,107 @@
             padding: 0.5rem 1rem;
             border-radius: 20px;
             margin-right: 10px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
         
-        /* Animations */
-        @keyframes pulse {
-            0% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.05);
-            }
-            100% {
-                transform: scale(1);
-            }
+        .welcome-badge:hover {
+            background-color: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
         }
-        
-        @keyframes rotate {
-            from {
-                transform: rotate(0deg);
-            }
-            to {
-                transform: rotate(360deg);
-            }
+
+        /* Dropdown styling */
+        .dropdown-menu {
+            background-color: rgba(20, 30, 60, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border-radius: 10px;
+            padding: 1rem;
+            transition: all 0.3s ease;
+            transform-origin: top center;
         }
-        
+
+        .dropdown-header {
+            color: var(--secondary-color);
+            font-weight: 600;
+            font-size: 1rem;
+            padding: 0.5rem 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 0.5rem;
+        }
+
+        .quick-deposit-btn {
+            transition: all 0.3s ease;
+        }
+
+        .quick-deposit-btn:hover {
+            transform: scale(1.05);
+        }
+
+        /* Section animations */
+        .section-title {
+            position: relative;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+            color: var(--secondary-color);
+            font-weight: 700;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: var(--secondary-color);
+            transition: width 0.4s ease;
+        }
+
+        .section-title:hover::after {
+            width: 100px;
+        }
+
+        /* Game card styles */
+        .game-card {
+            position: relative;
+            overflow: hidden;
+            border-radius: 15px;
+            background: linear-gradient(135deg, rgba(15, 52, 96, 0.8), rgba(25, 40, 80, 0.8));
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.4s ease;
+        }
+
+        .game-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(rgba(255, 255, 255, 0.1), transparent 70%);
+            transform: scale(0);
+            transition: transform 0.7s ease;
+        }
+
+        .game-card:hover::before {
+            transform: scale(1);
+        }
+
+        .game-card-icon {
+            font-size: 2.5rem;
+            color: var(--secondary-color);
+            margin-bottom: 1rem;
+            transition: all 0.4s ease;
+        }
+
+        .game-card:hover .game-card-icon {
+            transform: scale(1.2) rotate(5deg);
+            color: var(--secondary-color);
+        }
+
         /* Responsive adjustments */
         @media (max-width: 991.98px) {
             .navbar-brand {
@@ -249,68 +519,306 @@
             
             .navbar-nav {
                 margin-top: 10px;
+                padding: 10px 0;
             }
             
             .welcome-badge {
                 margin-bottom: 10px;
+                display: inline-block;
+            }
+
+            .navbar-nav .nav-link {
+                padding: 0.8rem 1rem;
+                margin: 0.3rem 0;
+                border-radius: 8px;
+                background-color: rgba(255, 255, 255, 0.05);
+            }
+
+            .balance-badge {
+                display: inline-block;
+                margin-bottom: 15px;
+            }
+
+            .dropdown-menu {
+                width: 100%;
             }
         }
         
         @media (max-width: 767.98px) {
             .container {
-                padding-left: 15px;
-                padding-right: 15px;
+                padding-left: 20px;
+                padding-right: 20px;
+            }
+
+            .card {
+                margin-bottom: 20px;
+            }
+
+            .social-icons a {
+                margin: 0 10px;
+                font-size: 1.2rem;
+                width: 35px;
+                height: 35px;
+            }
+
+            .section-title {
+                font-size: 1.5rem;
+            }
+
+            .game-card {
+                margin-bottom: 20px;
             }
         }
 
+        @media (max-width: 575.98px) {
+            .navbar-brand {
+                font-size: 1.5rem;
+                padding-left: 30px;
+            }
+
+            .navbar-brand::before {
+                font-size: 1.5rem;
+            }
+
+            .balance-badge, .welcome-badge {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.9rem;
+            }
+
+            .card-header {
+                padding: 1rem;
+            }
+
+            .card-body {
+                padding: 1.2rem;
+            }
+
+            .btn {
+                padding: 0.5rem 1rem;
+            }
+
+            .social-icons {
+                margin-top: 10px;
+            }
+
+            .social-icons a {
+                margin: 0 8px;
+                font-size: 1.1rem;
+                width: 30px;
+                height: 30px;
+            }
+        }
+
+        /* Loading spinner */
+        .spinner-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(26, 26, 46, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            backdrop-filter: blur(5px);
+            transition: all 0.5s ease;
+        }
+
+        .spinner-container {
+            position: relative;
+            width: 100px;
+            height: 100px;
+        }
+
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-left-color: var(--secondary-color);
+            border-radius: 50%;
+            width: 100px;
+            height: 100px;
+            animation: spin 1s linear infinite;
+        }
+
+        .spinner-inner {
+            position: absolute;
+            top: 25px;
+            left: 25px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-left-color: var(--primary-color);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 0.8s linear infinite reverse;
+        }
+
+        .spinner-text {
+            position: absolute;
+            top: 120px;
+            width: 200px;
+            left: -50px;
+            text-align: center;
+            color: var(--secondary-color);
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        @keyframes spin {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Winning animation effects */
+        @keyframes jackpotWin {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        @keyframes coinRain {
+            0% { 
+                transform: translateY(-100vh) rotate(0deg); 
+                opacity: 1;
+            }
+            100% { 
+                transform: translateY(100vh) rotate(360deg); 
+                opacity: 0;
+            }
+        }
+
+        .coin {
+            position: fixed;
+            top: -50px;
+            width: 30px;
+            height: 30px;
+            background-color: var(--secondary-color);
+            border-radius: 50%;
+            z-index: 9998;
+            box-shadow: 0 0 10px rgba(243, 156, 18, 0.8);
+        }
+
+        .win-text {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--secondary-color);
+            text-shadow: 0 0 20px rgba(243, 156, 18, 0.8);
+            z-index: 9999;
+            animation: jackpotWin 1s infinite;
+            display: none;
+        }
+
+        /* Card flip animation */
+        .card-flip {
+            perspective: 1000px;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .card-flip-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+
+        .card-flip:hover .card-flip-inner {
+            transform: rotateY(180deg);
+        }
+
+        .card-flip-front, .card-flip-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 15px;
+        }
+
+        .card-flip-back {
+            transform: rotateY(180deg);
+            background: linear-gradient(135deg, var(--primary-color), #9b59b6);
+        }
     </style>
     {% block styles %}{% endblock %}
     {% block extra_css %}{% endblock %}
 </head>
 <body>
+    <!-- Page Loader -->
+    <div id="pageLoader" class="spinner-overlay">
+        <div class="spinner-container">
+            <div class="spinner"></div>
+            <div class="spinner-inner"></div>
+            <div class="spinner-text">Loading Lucky King...</div>
+        </div>
+    </div>
+
+    <!-- Win Animation Container -->
+    <div id="winAnimationContainer" class="d-none">
+        <div class="win-text">JACKPOT!</div>
+    </div>
+    
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container-fluid px-4">
             <a class="navbar-brand animate__animated animate__fadeIn" href="{% url 'index' %}">Lucky King</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'index' %}"><i class="fas fa-home me-2"></i>Home</a>
+                        <a class="nav-link {% if request.resolver_match.url_name == 'index' %}active{% endif %}" href="{% url 'index' %}">
+                            <i class="fas fa-home me-2"></i>Home
+                        </a>
                     </li>
                     {% if user.is_authenticated %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'profile' %}"><i class="fas fa-user me-2"></i>My Profile</a>
+                        <a class="nav-link {% if request.resolver_match.url_name == 'profile' %}active{% endif %}" href="{% url 'profile' %}">
+                            <i class="fas fa-user me-2"></i>My Profile
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'start_game' %}"><i class="fas fa-play-circle me-2"></i>Start Game</a>
+                        <a class="nav-link {% if request.resolver_match.url_name == 'start_game' %}active{% endif %}" href="{% url 'start_game' %}">
+                            <i class="fas fa-play-circle me-2"></i>Start Game
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'game_history' %}"><i class="fas fa-history me-2"></i>Game History</a>
+                        <a class="nav-link {% if request.resolver_match.url_name == 'game_history' %}active{% endif %}" href="{% url 'game_history' %}">
+                            <i class="fas fa-history me-2"></i>Game History
+                        </a>
                     </li>
                     {% endif %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'leaderboard' %}"><i class="fas fa-trophy me-2"></i>Leaderboard</a>
+                        <a class="nav-link {% if request.resolver_match.url_name == 'leaderboard' %}active{% endif %}" href="{% url 'leaderboard' %}">
+                            <i class="fas fa-trophy me-2"></i>Leaderboard
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'about' %}"><i class="fas fa-info-circle me-2"></i>About</a>
+                        <a class="nav-link {% if request.resolver_match.url_name == 'about' %}active{% endif %}" href="{% url 'about' %}">
+                            <i class="fas fa-info-circle me-2"></i>About
+                        </a>
                     </li>
                 </ul>
                 <div class="navbar-nav">
                     {% if user.is_authenticated %}
-                    <div class="d-flex align-items-center">
-                        <span class="welcome-badge d-none d-lg-inline">
+                    <div class="d-flex align-items-center flex-wrap justify-content-center">
+                        <span class="welcome-badge d-none d-lg-inline animate__animated animate__fadeIn">
                             <i class="fas fa-user-circle me-1"></i>{{ user.username }}
                         </span>
                         {% if user.playerprofile %}
-                        <span class="balance-badge me-3">
+                        <span class="balance-badge me-3 animate__animated animate__fadeIn" id="balanceBadge">
                             <i class="fas fa-coins me-1"></i>${{ user.playerprofile.balance }}
                         </span>                            
-                        <!-- Add this right after the balance badge in the navbar -->
+                        <!-- Quick Deposit dropdown -->
                         <div class="dropdown me-2">
-                            <button class="btn btn-sm btn-success dropdown-toggle" type="button" id="quickDepositDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <button class="btn btn-sm btn-success dropdown-toggle animate__animated animate__fadeIn" type="button" id="quickDepositDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="fas fa-plus-circle me-1"></i>Deposit
                             </button>
                             <div class="dropdown-menu p-3" style="min-width: 250px;">
@@ -323,36 +831,29 @@
                                     </div>
                                 </div>
                                 <div class="mb-2">
-                                    <div class="btn-group w-100" role="group">
-                                        <button type="button" class="btn btn-outline-success quick-deposit-btn" data-amount="100">$100</button>
-                                        <button type="button" class="btn btn-outline-success quick-deposit-btn" data-amount="250">$250</button>
-                                        <button type="button" class="btn btn-outline-success quick-deposit-btn" data-amount="500">$500</button>
-                                    </div>
-                                </div>
-                                <div class="mb-2">
-                                    <div class="input-group">
-                                        <span class="input-group-text">$</span>
-                                        <input type="number" id="customDepositAmount" class="form-control" placeholder="Custom amount" min="5" step="5">
-                                        <button class="btn btn-success" type="button" id="customDepositBtn">Add</button>
-                                    </div>
-                                </div>
-                                <div id="depositMessage" class="small text-center mt-2"></div>
-                            </div>
-                        </div>                        
-                        <a class="nav-link btn btn-outline-danger btn-sm" href="{% url 'logout' %}">
-                            <i class="fas fa-sign-out-alt me-1"></i>Logout
-                        </a>
-                        {% endif %}
+                    <div class="input-group">
+                        <span class="input-group-text">$</span>
+                        <input type="number" id="customDepositAmount" class="form-control" placeholder="Custom amount" min="5" step="5">
+                        <button class="btn btn-success" type="button" id="customDepositBtn">Add</button>
                     </div>
-                    {% else %}
-                    <a class="nav-link btn btn-outline-light btn-sm me-2" href="{% url 'login' %}">
-                        <i class="fas fa-sign-in-alt me-1"></i>Login
-                    </a>
-                    <a class="nav-link btn btn-primary btn-sm" href="{% url 'signup' %}">
-                        <i class="fas fa-user-plus me-1"></i>Register
-                    </a>
-                    {% endif %}
                 </div>
+                <div id="depositMessage" class="small text-center mt-2"></div>
+            </div>
+        </div>                        
+        <a class="nav-link btn btn-outline-danger btn-sm" href="{% url 'logout' %}">
+            <i class="fas fa-sign-out-alt me-1"></i>Logout
+        </a>
+        {% endif %}
+    </div>
+    {% else %}
+    <a class="nav-link btn btn-outline-light btn-sm me-2" href="{% url 'login' %}">
+        <i class="fas fa-sign-in-alt me-1"></i>Login
+    </a>
+    <a class="nav-link btn btn-primary btn-sm" href="{% url 'signup' %}">
+        <i class="fas fa-user-plus me-1"></i>Register
+    </a>
+    {% endif %}
+</div>
             </div>
         </div>
     </nav>
@@ -385,7 +886,7 @@
                 </div>
                 <div class="col-md-6 text-center text-md-end">
                     <p class="mb-2">&copy; 2025 Lucky King Gambling Game. All rights reserved.</p>
-                    <p class="mb-2">Not For Sale and Publish. Only Enjoy the Game and Learn How Gambling Woks .</p>
+                    <p class="mb-2">Not For Sale and Publish. Only Enjoy the Game and Learn How Gambling Woks.</p>
                     <div class="social-icons">
                         <a href="#"><i class="fab fa-facebook"></i></a>
                         <a href="#"><i class="fab fa-twitter"></i></a>
@@ -401,8 +902,28 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- AOS (Animate On Scroll) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
     <!-- Custom JS -->
     <script>
+        // Page loader
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                const loader = document.getElementById('pageLoader');
+                loader.style.opacity = '0';
+                setTimeout(function() {
+                    loader.style.display = 'none';
+                }, 500);
+            }, 500);
+        });
+        
+        // Initialize AOS
+        AOS.init({
+            duration: 800,
+            easing: 'ease-in-out',
+            once: true
+        });
+        
         document.addEventListener('DOMContentLoaded', function() {
             // Add hover animation to buttons
             const buttons = document.querySelectorAll('.btn');
@@ -416,7 +937,7 @@
             });
             
             // Balance animation for the navbar balance indicator
-            const balanceBadge = document.querySelector('.balance-badge');
+            const balanceBadge = document.getElementById('balanceBadge');
             if (balanceBadge) {
                 const balanceText = balanceBadge.textContent.trim();
                 const balanceValue = parseFloat(balanceText.replace('$', ''));
@@ -446,13 +967,20 @@
                     bsAlert.close();
                 }, 5000);
             });
+            
+            // Navbar scroll effect
+            window.addEventListener('scroll', function() {
+                const navbar = document.querySelector('.navbar');
+                if (window.scrollY > 50) {
+                    navbar.classList.add('scrolled');
+                } else {
+                    navbar.classList.remove('scrolled');
+                }
+            });
         });
         
-        // Replace or update your quick deposit JavaScript in the base template
-
-        // Add event listeners to quick deposit buttons
+        // Quick deposit functionality
         const depositButtons = document.querySelectorAll('.quick-deposit-btn');
-
         depositButtons.forEach(button => {
             button.addEventListener('click', function() {
                 const amount = this.getAttribute('data-amount');
@@ -461,14 +989,59 @@
         });
 
         // Handle custom deposit button click
-        document.getElementById('customDepositBtn').addEventListener('click', function() {
-            const customAmount = document.getElementById('customDepositAmount').value;
-            if(customAmount) {
-                window.location.href = `{% url 'deposit' %}?amount=${customAmount}`;
+        const customDepositBtn = document.getElementById('customDepositBtn');
+        if (customDepositBtn) {
+            customDepositBtn.addEventListener('click', function() {
+                const customAmount = document.getElementById('customDepositAmount').value;
+                if(customAmount) {
+                    window.location.href = `{% url 'deposit' %}?amount=${customAmount}`;
+                } else {
+                    document.getElementById('depositMessage').innerHTML = '<span class="text-danger">Please enter an amount</span>';
+                }
+            });
+        }
+        
+        // Win animation functions
+        function showWinAnimation(amount) {
+            const winContainer = document.getElementById('winAnimationContainer');
+            const winText = document.querySelector('.win-text');
+            
+            winText.textContent = `JACKPOT! $${amount}`;
+            winText.style.display = 'block';
+            winContainer.classList.remove('d-none');
+            
+            // Create falling coins
+            for (let i = 0; i < 50; i++) {
+                createCoin();
             }
-        });
+            
+            setTimeout(() => {
+                winText.style.display = 'none';
+                winContainer.classList.add('d-none');
+                // Remove coins
+                document.querySelectorAll('.coin').forEach(coin => coin.remove());
+            }, 5000);
+        }
+        
+        function createCoin() {
+            const coin = document.createElement('div');
+            coin.classList.add('coin');
+            coin.style.left = `${Math.random() * 100}%`;
+            coin.style.animationDuration = `${Math.random() * 3 + 2}s`;
+            coin.style.animationDelay = `${Math.random() * 2}s`;
+            coin.style.width = `${Math.random() * 20 + 10}px`;
+            coin.style.height = coin.style.width;
+            
+            document.body.appendChild(coin);
+            
+            coin.style.animation = 'coinRain 3s linear forwards';
+            
+            coin.addEventListener('animationend', () => {
+                coin.remove();
+            });
+        }
     </script>
     {% block extra_js %}{% endblock %}
-    
 </body>
 </html>
+                                
