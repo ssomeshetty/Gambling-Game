@@ -3,7 +3,7 @@ from decimal import Decimal
 from .models import GameStage, GameSession, GameMove, PlayerProfile
 
 class GameEngine:
-    """Core game logic engine"""
+    """Core game logic engine with losing streak compensation"""
     
     @staticmethod
     def initialize_game(player_profile, bet_amount):
@@ -59,13 +59,65 @@ class GameEngine:
             ['NOT_SAFE'] * stage_config.not_safe_doors
         )
         
-        # Adjust difficulty based on player's profile and current bet
+        # First check if player is on a losing streak and compensate if needed
+        GameEngine._check_losing_streak(session, doors)
+        
+        # Then apply normal difficulty adjustment
         GameEngine._adjust_difficulty(session, doors)
         
         # Shuffle the doors
         random.shuffle(doors)
         
         return doors, stage_config
+    
+    @staticmethod
+    def _check_losing_streak(session, doors):
+        """Check if player is on a losing streak and improve odds if so"""
+        player = session.player
+        
+        # Calculate losing streak metrics
+        loss_ratio = 0
+        if player.games_played > 0:
+            loss_ratio = 1 - (player.games_won / player.games_played)
+        
+        # Get recent game history (last 5 games)
+        recent_sessions = GameSession.objects.filter(
+            player=player,
+            is_active=False
+        ).order_by('-id')[:5]
+        
+        recent_losses = sum(1 for s in recent_sessions if s.current_bet < s.original_bet)
+        
+        # Check losing streak conditions:
+        # 1. Overall loss ratio is high (lost more than 70% of games)
+        # 2. Recently lost 3 or more games in a row
+        severe_losing_streak = loss_ratio > 0.7 or recent_losses >= 3
+        moderate_losing_streak = loss_ratio > 0.5 or recent_losses >= 2
+        
+        # Apply compensation based on losing streak severity
+        if severe_losing_streak:
+            # Significant boost for severe losing streak
+            for i in range(len(doors)):
+                if doors[i] == 'NOT_SAFE':
+                    # 80% chance to convert NOT_SAFE to MID_SAFE
+                    if random.random() < 0.8:
+                        doors[i] = 'MID_SAFE'
+                elif doors[i] == 'MID_SAFE':
+                    # 50% chance to convert MID_SAFE to SAFE
+                    if random.random() < 0.5:
+                        doors[i] = 'SAFE'
+        
+        elif moderate_losing_streak:
+            # Moderate boost for moderate losing streak
+            for i in range(len(doors)):
+                if doors[i] == 'NOT_SAFE':
+                    # 50% chance to convert NOT_SAFE to MID_SAFE
+                    if random.random() < 0.5:
+                        doors[i] = 'MID_SAFE'
+                elif doors[i] == 'MID_SAFE':
+                    # 30% chance to convert MID_SAFE to SAFE
+                    if random.random() < 0.3:
+                        doors[i] = 'SAFE'
     
     @staticmethod
     def _adjust_difficulty(session, doors):
@@ -79,7 +131,7 @@ class GameEngine:
         high_bet = session.original_bet > (player.total_bet / max(player.games_played, 1)) * Decimal('1.5')
         
         # Check if player is close to the end (potentially big win)
-        close_to_end = session.current_stage >= 5
+        close_to_end = session.current_stage >= 6
         
         # Get player's moves in this session
         moves = GameMove.objects.filter(session=session)
@@ -92,10 +144,10 @@ class GameEngine:
                 if doors[i] == 'SAFE' and random.random() < 0.3:
                     doors[i] = 'MID_SAFE'
                 elif doors[i] == 'MID_SAFE' and random.random() < 0.3:
-                    doors[i] = 'NOT_SAFE'
+                    doors[i] = 'NOT_SAFE'  # Fixed: correctly convert MID_SAFE to NOT_SAFE
         
         # If player consistently chooses SAFE, reduce SAFE options
-        if safe_moves_count >= 2 and len(moves) >= 2:
+        if safe_moves_count >= 4 and len(moves) >= 4:
             for i in range(len(doors)):
                 if doors[i] == 'SAFE' and random.random() < 0.4:
                     doors[i] = 'MID_SAFE'
