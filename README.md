@@ -44,7 +44,7 @@ To run the game locally, ensure you have the following installed:
 
 1. Clone this repository to your local machine:
    ```bash
-   git clone https://github.com/your-username/lucky-king.git
+   git clone https://github.com/ssomeshetty/lucky-king.git
 
 
 2. Navigate into the project directory:
